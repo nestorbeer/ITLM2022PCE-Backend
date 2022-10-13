@@ -12,7 +12,7 @@ namespace Back_End.Controllers
         public IActionResult GetErrorExample() {
             try
             {
-                Product product = new Product(1, "fshbsfbnh", 100);
+                Product product = new Product(1, "fshbsfbnh", 100, false);
                 product.SetNewPrice(50);
             }
             catch (Exception ex)
@@ -56,32 +56,44 @@ namespace Back_End.Controllers
             }
             return Ok(productsByCategory);
         }
+        [HttpGet("GetProductsByDestacados")]
+        public IActionResult GetProductsByDestacados(int idCategory)
+        {
+            List<Product> productsDestacado = new List<Product>();
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok(productsDestacado);
+        }
 
-        
         private List<Product> GetProducts()
         {
             List<Product> products = new List<Product>();
 
-            Product product1 = new Product(1, "Producto 1", 3000);
+            Product product1 = new Product(1, "Producto 1", 3000, false);
             product1.Description = "Remera basica blanca";
             product1.category = new Category(1, "Remeras");
             products.Add(product1);
 
-            Product product2 = new Product(2, "Producto 2", 500);
+            Product product2 = new Product(2, "Producto 2", 500, true);
             product2.Description = "Buzo canguro con capucha";
             product2.category = new Category(2, "Buzos");
             products.Add(product2);
 
-            Product product3 = new Product(3, "Producto 3", 1000);
+            Product product3 = new Product(3, "Producto 3", 1000, false);
             product3.Size = "XXXL";
             products.Add(product3);
 
-            Product product4 = new Product(2, "Producto 4", 1000);
+            Product product4 = new Product(2, "Producto 4", 1000,true);
             product4.Description = "Buzo canguro con capucha 4 ";
             product4.category = new Category(2, "Buzos");
             products.Add(product4);
 
-            Product product5 = new Product(1, "Producto 5",1000);
+            Product product5 = new Product(1, "Producto 5",1000, false);
             product5.Description = "Remera basica blanca 5";
             product5.category = new Category(1, "Remeras");
             products.Add(product1);

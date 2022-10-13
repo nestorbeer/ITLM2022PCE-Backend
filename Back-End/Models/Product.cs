@@ -14,7 +14,8 @@
 
         public Category category { get; set; }
 
-        public Product(int id, string name, double price)
+        public bool Destacado { get; set; }
+        public Product(int id, string name, double price, bool destacado)
         {
             this._originalPrice = price;
             this.Price = price;
@@ -22,6 +23,7 @@
             Name = name;
             this.Size = "No Size";
             this.category = new Category();
+            Destacado = destacado;
         }
 
         public void SetNewPrice(double newPrice) {
