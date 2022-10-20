@@ -1,5 +1,6 @@
 ﻿using Back_End.Models;
 using Microsoft.AspNetCore.Mvc;
+using Back_End.Repositories;
 
 namespace Back_End.Controllers
 {
@@ -9,7 +10,8 @@ namespace Back_End.Controllers
     {
 
         [HttpGet("GetErrorExample")]
-        public IActionResult GetErrorExample() {
+        public IActionResult GetErrorExample()
+        {
             try
             {
                 Product product = new Product(1, "fshbsfbnh", 100, false);
@@ -22,11 +24,13 @@ namespace Back_End.Controllers
             return Ok();
         }
         [HttpGet("GetProductsHome")]
-        public ActionResult GetProductsHome() {
+        public ActionResult GetProductsHome()
+        {
             List<Product> products = new List<Product>();
             try
             {
-                products = GetProducts();
+                ProductRepository repo = new ProductRepository();
+                products = repo.GetProducts();
             }
             catch (Exception ex)
             {
@@ -36,12 +40,14 @@ namespace Back_End.Controllers
         }
 
         [HttpGet("GetProductsByCategory")]
-        public IActionResult GetProductsByCategory(int idCategory) {
+        public IActionResult GetProductsByCategory(int idCategory)
+        {
             List<Product> products = new List<Product>();
             List<Product> productsByCategory = new List<Product>();
             try
             {
-                products = GetProducts();
+                ProductRepository repo = new ProductRepository();
+                products = repo.GetProducts();
                 foreach (var product in products)
                 {
                     if (product.category.idCategory == idCategory)
@@ -57,48 +63,81 @@ namespace Back_End.Controllers
             return Ok(productsByCategory);
         }
         [HttpGet("GetProductsByDestacados")]
-        public IActionResult GetProductsByDestacados(int idCategory)
+        public IActionResult GetProductsByDestacados()
         {
-            List<Product> productsDestacado = new List<Product>();
+            List<Product> productsDestacados = new List<Product>();
+            List<Product> productsAux = new List<Product>();
             try
             {
+                ProductRepository repo = new ProductRepository();
+                productsAux = repo.GetProducts();
+                foreach (var product in productsAux) 
+                { 
+                    if (product.Destacado) productsDestacados.Add(product); 
+                }
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            return Ok(productsDestacado);
+            return Ok(productsDestacados);
         }
 
-        private List<Product> GetProducts()
+        [HttpGet("GetProductsByDestacadosForEach")]
+        public IActionResult GetProductsByDestacadosForEach()
         {
-            List<Product> products = new List<Product>();
-
-            Product product1 = new Product(1, "Producto 1", 3000, false);
-            product1.Description = "Remera basica blanca";
-            product1.category = new Category(1, "Remeras");
-            products.Add(product1);
-
-            Product product2 = new Product(2, "Producto 2", 500, true);
-            product2.Description = "Buzo canguro con capucha";
-            product2.category = new Category(2, "Buzos");
-            products.Add(product2);
-
-            Product product3 = new Product(3, "Producto 3", 1000, false);
-            product3.Size = "XXXL";
-            products.Add(product3);
-
-            Product product4 = new Product(2, "Producto 4", 1000,true);
-            product4.Description = "Buzo canguro con capucha 4 ";
-            product4.category = new Category(2, "Buzos");
-            products.Add(product4);
-
-            Product product5 = new Product(1, "Producto 5",1000, false);
-            product5.Description = "Remera basica blanca 5";
-            product5.category = new Category(1, "Remeras");
-            products.Add(product1);
-
-            return products;
+            List<Product> productsDestacados = new List<Product>();
+            try
+            {
+                ProductRepository repo = new ProductRepository();
+                foreach (var product in repo.GetProducts()) { if (product.Destacado) productsDestacados.Add(product); }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok(productsDestacados);
         }
+        [HttpGet("GetProductsByDestacadosFindAll")]
+        public IActionResult GetProductsByDestacadosFindAll()
+        {
+            try
+            {
+                ProductRepository repo = new ProductRepository();
+                return Ok(repo.GetProducts().FindAll(product => product.Destacado));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("AddProductToCart")] //Crear
+        public IActionResult AddProductToCart(int idProducto, int cantidad) {
+            try
+            {
+                CartRepository.AddProductToCart(idProducto, cantidad);
+                return Ok("El producto se agrego con exito");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetCart")]
+        public IActionResult GetCart() {
+            try
+            {
+                return Ok(CartRepository.GetCart().items);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }

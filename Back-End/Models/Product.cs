@@ -19,11 +19,15 @@
         {
             this._originalPrice = price;
             this.Price = price;
-            Id = id;
-            Name = name;
+            this.Id = id;
+            this.Name = name;
             this.Size = "No Size";
             this.category = new Category();
-            Destacado = destacado;
+            this.Destacado = destacado;
+        }
+
+        public Product() {
+            this.category = new Category();
         }
 
         public void SetNewPrice(double newPrice) {
